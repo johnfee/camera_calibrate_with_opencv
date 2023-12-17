@@ -17,12 +17,11 @@ def load_config():
     dir_config = os.path.join(local_path, 'config\\camera_calibration')
     with open(dir_config) as file:
         cam_calib_dist = yaml.load(file, Loader=yaml.Loader)
-        print('load yaml')
+        print('--> load yaml')
         print(cam_calib_dist.keys())
         mtx = cam_calib_dist['mtx']
         dist = cam_calib_dist['dist']
         print(mtx)
         print(dist)
 
-
-load_config()
+    return mtx, dist

@@ -19,7 +19,7 @@ def main():
     # Create Aruco Marker object
     marker = ArucoMarker("4X4_50")
     # Generate Aruco Marker (marker id, size of marker)
-    _, gen_marker_img = marker.generate_marker(marker_id=2, marker_size_pix=100)
+    _, gen_marker_img = marker.generate_marker(marker_id=1, marker_size_pix=50)
     # Display the image to us
     cv2.imshow("Generate Aruco Marker", gen_marker_img)
     # Exit on any key

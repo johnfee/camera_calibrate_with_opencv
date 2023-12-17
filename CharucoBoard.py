@@ -49,12 +49,13 @@ class CharucoBoard(object):
 
     def generate_charucoboard(self):
         file_path = f"boards\\board_{self.dict_type}.png"
-        dpi = 80
+        dpi = 300
         mm_to_inch = 1 / 25.4
-        square_length_mm = 1000 * self.square_length
-
-        img_row_pix = round(self.pattern_size[0] * mm_to_inch * square_length_mm * dpi)
-        img_col_pix = round(self.pattern_size[1] * mm_to_inch * square_length_mm * dpi)
+        square_length_mm = self.square_length * 1000
+        # img_row_pix = round(self.pattern_size[0] * mm_to_inch * square_length_mm * dpi)
+        # img_col_pix = round(self.pattern_size[1] * mm_to_inch * square_length_mm * dpi)
+        img_row_pix = 500
+        img_col_pix = 700
         board_img = self.board.generateImage((img_row_pix, img_col_pix))
         result = cv2.imwrite(file_path, board_img)
         if result:
