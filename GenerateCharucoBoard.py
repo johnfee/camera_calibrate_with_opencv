@@ -24,8 +24,8 @@ def main():
         dict_type="4X4_50",
         square_row=5,
         square_col=7,
-        square_length=0.04,  # meter
-        marker_length=0.02,  # meter
+        square_length_mm=40,  # meter
+        marker_length_mm=30,  # meter
     )
 
     # Generate Aruco Marker (marker id, size of marker)

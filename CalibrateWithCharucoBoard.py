@@ -25,18 +25,14 @@ def main():
         dict_type="4X4_50",
         square_row=5,
         square_col=7,
-        square_length=0.04,  # meter
-        marker_length=0.02,  # meter
+        square_length_mm=40,  # mm meter
+        marker_length_mm=30,  # mm meter
     )
 
     board.show_charucoboard_info()
 
     img = load_images()
     board.camera_calibrate(img)
-
-    # Exit on any key
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":

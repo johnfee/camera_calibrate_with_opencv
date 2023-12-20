@@ -43,6 +43,7 @@ def estimate_pose_single_markers(corners, marker_size, mtx, dist):
 def main():
     # Create Charucoboard object
     marker = ArucoMarker("4X4_50")
+    marker_size_mm = 13.0  # mm meter
 
     mtx, dist = load_config()
     cap = cv2.VideoCapture(0)
@@ -63,10 +64,10 @@ def main():
 
         marker_corners, marker_ids, _ = marker.detector.detectMarkers(dst)
         if not (marker_ids is None):
-            rvecs, tvecs, _ = estimate_pose_single_markers(marker_corners, 5.3, new_cameramtx, dist)
+            rvecs, tvecs, _ = estimate_pose_single_markers(marker_corners, marker_size_mm/1000, new_cameramtx, dist)
             for idx in range(len(marker_ids)):
-                cv2.drawFrameAxes(dst, mtx, dist, rvecs[idx], tvecs[idx], 5)
-                print('marker id:%d, pos_x = %f,pos_y = %f, pos_z = %f' % (marker_ids[idx], tvecs[idx][0], tvecs[idx][1], tvecs[idx][2]))
+                cv2.drawFrameAxes(dst, mtx, dist, rvecs[idx], tvecs[idx], marker_size_mm/1000)
+                print('marker id　[mm] :%d, pos_x = %f,pos_y = %f, pos_z = %f' % (marker_ids[idx], tvecs[idx][0], tvecs[idx][1], tvecs[idx][2]))
 
         detect_frame = marker.draw_detected_markers(dst)
         # cv2.aruco.drawDetectedMarkers(dst, marker_corners, marker_ids)

@@ -12,7 +12,7 @@ from util import load_images
 
 
 class CharucoBoard(object):
-    def __init__(self, dict_type: str, square_row: int, square_col: int, square_length: float, marker_length: float):
+    def __init__(self, dict_type: str, square_row: int, square_col: int, square_length_mm: float, marker_length_mm: float):
         self.dictionary = {
             "4X4_50": aruco.DICT_4X4_50,
             "5X5_50": aruco.DICT_5X5_50,
@@ -28,8 +28,8 @@ class CharucoBoard(object):
 
         # charucoboard
         self.pattern_size = (square_row, square_col)
-        self.square_length = square_length
-        self.marker_length = marker_length
+        self.square_length = square_length_mm / 1000
+        self.marker_length = marker_length_mm / 1000
         self.board = aruco.CharucoBoard(
             self.pattern_size, self.square_length, self.marker_length, self.dict_aruco)
         self.board_detector = aruco.CharucoDetector(self.board)
@@ -39,19 +39,20 @@ class CharucoBoard(object):
         self.board_square_length = self.board.getSquareLength()
         self.board_marker_length = self.board.getMarkerLength()
         self.board_objp = np.array(self.board.getChessboardCorners())
+        self.mean_error = 0
 
     def show_charucoboard_info(self) -> None:
         print("--- Charucoboard property info ---")
         print(f"Board Size : Row {self.board_size[0]} / Column {self.board_size[1]}")
-        print(f"Square size [mm] : {round(self.board_square_length, 3)}")
-        print(f"Marker size [mm] : {round(self.board_marker_length, 3)}")
+        print(f"Square size [mm] : {round(self.board_square_length * 1000, 3)}")
+        print(f"Marker size [mm] : {round(self.board_marker_length * 1000, 3)}")
         print("----------------------------------\n")
 
     def generate_charucoboard(self):
         file_path = f"boards\\board_{self.dict_type}.png"
-        dpi = 300
-        mm_to_inch = 1 / 25.4
-        square_length_mm = self.square_length * 1000
+        # dpi = 300
+        # mm_to_inch = 1 / 25.4
+        # square_length_mm = self.square_length * 1000
         # img_row_pix = round(self.pattern_size[0] * mm_to_inch * square_length_mm * dpi)
         # img_col_pix = round(self.pattern_size[1] * mm_to_inch * square_length_mm * dpi)
         img_row_pix = 500
@@ -80,8 +81,8 @@ class CharucoBoard(object):
         """
         # Creating vector to store vectors of 3D points for each checkerboard image
         objpoints = []
-        objp = np.zeros(((self.pattern_size[0] - 1) * (self.pattern_size[1] - 1), 3), np.float32)
-        objp[:, :2] = np.mgrid[0:(self.pattern_size[1] - 1), 0:(self.pattern_size[0] - 1)].T.reshape(-1, 2)
+        objp = np.zeros((4 * 6, 3), np.float32)
+        objp[:, :2] = np.mgrid[0:6, 0:4].T.reshape(-1, 2)
 
         # Creating vector to store vectors of 2D points for each checkerboard image
         imgpoints = []
@@ -110,13 +111,13 @@ class CharucoBoard(object):
                 cv2.waitKey(1000)
                 imgpoints.append(corners2)
 
+            print(objpoints[idx])
             imsize = gray.shape[::-1]
-            # print(objpoints[idx])
-            # print(imgpoints[idx])
 
         print("--> CAMERA CALIBRATE WITH CharucoBoard START")
         ret, cam_mtx, dist_coeff, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, imsize, None, None)
 
+        print("--> ret : \n")
         print(ret)
         print("--> Camera matrix : \n")
         print(cam_mtx)
@@ -139,3 +140,10 @@ class CharucoBoard(object):
             documents = yaml.dump(camera_calibration_dict, file)
 
         print("--> CAMERA CALIBRATE WITH CharucoBoard END")
+
+        for i in range(len(objpoints)):
+            imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs[i], tvecs[i], cam_mtx, dist_coeff)
+            error = cv2.norm(imgpoints[i], imgpoints2, cv2.NORM_L2) / len(imgpoints2)
+            self.mean_error += error
+
+        print("--> Total Re-projection error: ", self.mean_error / len(objpoints))
