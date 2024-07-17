@@ -22,10 +22,10 @@ def main():
     # Create Charucoboard object
     board = CharucoBoard(
         dict_type="4X4_50",
-        square_row=5,
+        square_row=14,
         square_col=7,
-        square_length_mm=40,  # meter
-        marker_length_mm=30,  # meter
+        square_length_mm=1000,  # meter
+        marker_length_mm=900,  # meter
     )
 
     # Generate Aruco Marker (marker id, size of marker)
