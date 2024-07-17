@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Set parameters for the Charuco board
-squaresX = 10  # Number of squares in X direction
+squaresX = 15  # Number of squares in X direction
 squaresY = 7  # Number of squares in Y direction
 squareLength = 0.04  # Square side length (in meters)
 markerLength = 0.02  # Marker side length (in meters)
@@ -26,4 +26,4 @@ ax.imshow(board_img, cmap='gray')
 ax.axis('off')
 
 # Save figure as SVG
-plt.savefig("charuco_board.svg", format='svg')
+plt.savefig("charuco_board.png", format='png')
