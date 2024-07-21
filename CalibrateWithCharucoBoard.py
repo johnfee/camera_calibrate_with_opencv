@@ -23,8 +23,8 @@ def main():
     # Create Charucoboard object
     board = CharucoBoard(
         dict_type="4X4_50",
-        square_row=5,
-        square_col=7,
+        square_row=7,
+        square_col=5,
         square_length_mm=40,  # mm meter
         marker_length_mm=30,  # mm meter
     )
